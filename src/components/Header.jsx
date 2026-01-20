@@ -1,20 +1,19 @@
-import { useNavigate } from "react-router-dom";
-import { AppBar, Container, Toolbar, Button } from "@mui/material";
+import { useNavigate, Link } from "react-router-dom";
+import { AppBar, Toolbar, Button } from "@mui/material";
 import pokedexLogo from "../assets/pokedex-logo.png";
 import { logout } from "../services/userService";
 import "./Header.css";
 
 export default function Header() {
-
     const isLoggedIn = localStorage.getItem("access_token") !== null;
     const navigate = useNavigate();
+
     const handleLogout = () => {
         logout();
         navigate("/");
-    }
+    };
 
     return (
-        <>
         <div className="pokedex navbar">
             <AppBar position="static">
                 <Toolbar>
@@ -23,21 +22,22 @@ export default function Header() {
                     </div>
                 </Toolbar>
                 <Toolbar>
-
-                        <Button color="inherit" href="/">Inicio</Button>
-                        {isLoggedIn && (
-                            <>
-                            <Button color="inherit" href="/add-pokemon">Agregar Pokémon</Button>
+                    <Button color="inherit" component={Link} to="/">Inicio</Button>
+                    
+                    {isLoggedIn && (
+                        <>
+                            <Button color="inherit" component={Link} to="/add-pokemon">Agregar Pokémon</Button>
+                            <Button color="inherit" component={Link} to="/add-trainer">Agregar Entrenador</Button>
+                            <Button color="inherit" component={Link} to="/trainer">Ver Entrenadores</Button>
                             <Button color="inherit" onClick={handleLogout}>Cerrar Sesión</Button>
-                            </>
-                        )}
-                        {!isLoggedIn &&
-                            <Button color="inherit" href="/login">Iniciar Sesión</Button>
-                        }
+                        </>
+                    )}
 
+                    {!isLoggedIn && (
+                        <Button color="inherit" component={Link} to="/login">Iniciar Sesión</Button>
+                    )}
                 </Toolbar>
             </AppBar>
         </div>
-        </>
     );
 }
