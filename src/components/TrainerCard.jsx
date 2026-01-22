@@ -4,10 +4,18 @@ import { deleteTrainer } from "../services/trainerService";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import InfoIcon from '@mui/icons-material/Info';
+import { useEffect, useState } from "react";
 
 export default function TrainerCard({ trainer, onDeleteSuccess }) {
 
   const navigate = useNavigate();
+
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+    setIsAuthenticated(!!token);
+  }, []);
 
   if (!trainer) return null;
 
@@ -67,31 +75,33 @@ export default function TrainerCard({ trainer, onDeleteSuccess }) {
             Detalles
           </Button>
 
-          <Stack direction="row" spacing={1}>
+          {isAuthenticated && (
+            <Stack direction="row" spacing={1}>
 
-            <Button
-              size="small"
-              variant="outlined"
-              color="warning"
-              fullWidth
-              startIcon={<EditIcon />}
-              onClick={() => navigate(`/trainers/edit/${trainer.id}`)}
-            >
-              Editar
-            </Button>
+              <Button
+                size="small"
+                variant="outlined"
+                color="warning"
+                fullWidth
+                startIcon={<EditIcon />}
+                onClick={() => navigate(`/trainers/edit/${trainer.id}`)}
+              >
+                Editar
+              </Button>
 
-            <Button
-              size="small"
-              variant="outlined"
-              color="error"
-              fullWidth
-              startIcon={<DeleteIcon />}
-              onClick={handleDelete}
-            >
-              Borrar
-            </Button>
+              <Button
+                size="small"
+                variant="outlined"
+                color="error"
+                fullWidth
+                startIcon={<DeleteIcon />}
+                onClick={handleDelete}
+              >
+                Borrar
+              </Button>
 
-          </Stack>
+            </Stack>
+          )}
 
         </Stack>
 

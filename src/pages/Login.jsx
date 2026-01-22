@@ -22,7 +22,7 @@ export default function Login() {
 
       if (token) {
         localStorage.setItem("access_token", token);
-        alert("¡Inicio de sesión exitoso! ✅");
+        alert("¡Inicio de sesión exitoso!");
         navigate("/");
         window.location.reload();
       } else {
@@ -30,7 +30,7 @@ export default function Login() {
       }
     } catch (error) {
       console.error("Error al iniciar sesión:", error);
-      alert("Credenciales incorrectas. ❌");
+      alert("Credenciales incorrectas.");
     }
   };
 
