@@ -12,6 +12,8 @@ import PokemonEdit from './pages/PokemonEdit'
 import Login from './pages/Login'
 
 import './App.css'
+import TrainerDetails from './pages/TrainerDetails'
+import TrainerEdit from './pages/TrainerEdit'
 
 function App() {
 
@@ -24,18 +26,19 @@ function App() {
 
         <Routes>
 
-          {/* Pokemons */}
+
           <Route path='/' element={<PokemonList />} />
           <Route path='/add-pokemon' element={<PokemonForm />} />
           <Route path='/pokemon/edit/:id' element={<PokemonEdit />} />
 
-          {/* Auth */}
+
           <Route path='/login' element={<Login />} />
 
-          {/* Trainers */}
+
           <Route path='/trainer' element={<TrainerList />} />
           <Route path='/add-trainer' element={<TrainerForm />} />
-          <Route path='/trainers/:id' element={<TrainerDetail />} />
+          <Route path='/trainers/:id' element={<TrainerDetails/>} />
+          <Route path="/trainers/edit/:id" element={<TrainerEdit/>} />
           <Route path="/pokemon/:id" element={<PokemonDetails />} />
 
 

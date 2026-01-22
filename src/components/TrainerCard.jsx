@@ -1,53 +1,100 @@
-import { Card, CardActions, CardContent, CardMedia, Typography, Button } from "@mui/material";
+import { Card, CardActions, CardContent, CardMedia, Typography, Button, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { deleteTrainer } from "../services/trainerService";
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import InfoIcon from '@mui/icons-material/Info';
 
-const API_MEDIA_URL = import.meta.env.VITE_API_MEDIA_URL;
-
-export default function PokemonCard({ pokemon }) {
+export default function TrainerCard({ trainer, onDeleteSuccess }) {
 
   const navigate = useNavigate();
 
-  const pokemonImageUrl = pokemon.picture
-    ? `${API_MEDIA_URL}/${pokemon.picture}`
-    : "https://via.placeholder.com/300";
+  if (!trainer) return null;
+
+  const imageUrl = trainer.picture || "https://via.placeholder.com/200";
+
+  const handleDelete = async () => {
+
+    if (window.confirm(`¿Estás seguro de eliminar a ${trainer.name}?`)) {
+      try {
+        await deleteTrainer(trainer.id);
+        onDeleteSuccess(trainer.id);
+      } catch (error) {
+        console.error("Error al eliminar el entrenador:", error);
+        alert("No se pudo eliminar el entrenador.");
+      }
+    }
+
+  };
 
   return (
-    <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
+    <Card sx={{ height: "100%", display: "flex", flexDirection: "column", boxShadow: 3 }}>
 
       <CardMedia
         component="img"
-        height="200"
-        image={pokemonImageUrl}
-        alt={pokemon.name}
-        sx={{ objectFit: "contain", p: 1 }}
+        height="160"
+        image={imageUrl}
+        alt={trainer.name}
+        sx={{ objectFit: "cover" }}
       />
 
       <CardContent sx={{ flexGrow: 1 }}>
-        <Typography variant="h5" fontWeight="bold">
-          {pokemon.name}
+
+        <Typography variant="h6" fontWeight="bold">
+          {trainer.name}
         </Typography>
 
         <Typography variant="body2">
-          Tipo: {pokemon.type}
+          Nivel: {trainer.level}
         </Typography>
 
         <Typography variant="body2">
-          Peso: {pokemon.weight} kg
+          Edad: {trainer.age}
         </Typography>
 
-        <Typography variant="body2">
-          Altura: {pokemon.height} m
-        </Typography>
       </CardContent>
 
-      <CardActions>
-        <Button 
-          fullWidth 
-          variant="contained"
-          onClick={() => navigate(`/pokemon/${pokemon.id}`)}
-        >
-          Ver detalles
-        </Button>
+      <CardActions sx={{ p: 2, pt: 0 }}>
+
+        <Stack spacing={1} sx={{ width: '100%' }}>
+
+          <Button
+            size="small"
+            variant="contained"
+            startIcon={<InfoIcon />}
+            onClick={() => navigate(`/trainers/${trainer.id}`)}
+          >
+            Detalles
+          </Button>
+
+          <Stack direction="row" spacing={1}>
+
+            <Button
+              size="small"
+              variant="outlined"
+              color="warning"
+              fullWidth
+              startIcon={<EditIcon />}
+              onClick={() => navigate(`/trainers/edit/${trainer.id}`)}
+            >
+              Editar
+            </Button>
+
+            <Button
+              size="small"
+              variant="outlined"
+              color="error"
+              fullWidth
+              startIcon={<DeleteIcon />}
+              onClick={handleDelete}
+            >
+              Borrar
+            </Button>
+
+          </Stack>
+
+        </Stack>
+
       </CardActions>
 
     </Card>

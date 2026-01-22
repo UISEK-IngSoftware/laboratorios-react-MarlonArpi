@@ -20,7 +20,7 @@ export default function PokemonCard({ pokemon, onDeleteSuccess }) {
         await deletePokemon(pokemon.id);
         onDeleteSuccess(pokemon.id);
       } catch (error) {
-        // ✅ Corregido: Ahora usamos la variable 'error'
+
         console.error("Error al eliminar el Pokémon:", error);
         alert("No se pudo eliminar el Pokémon.");
       }

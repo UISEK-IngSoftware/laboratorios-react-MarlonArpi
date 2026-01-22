@@ -30,7 +30,6 @@ export default function PokemonEdit() {
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    // Si es un archivo, guardamos el archivo; si no, el valor del texto
     setFormData({ 
         ...formData, 
         [name]: files ? files[0] : value 
@@ -40,25 +39,25 @@ export default function PokemonEdit() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Creamos un FormData para manejar la imagen correctamente
+
     const dataToSend = new FormData();
     dataToSend.append("name", formData.name);
     dataToSend.append("type", formData.type);
     dataToSend.append("weight", formData.weight);
     dataToSend.append("height", formData.height);
     
-    // Solo agregamos la imagen si el usuario seleccionó una nueva
+
     if (formData.picture instanceof File) {
       dataToSend.append("picture", formData.picture);
     }
 
     try {
       await updatePokemon(id, dataToSend);
-      alert("¡Pokémon actualizado correctamente! ✅");
+      alert("¡Pokémon actualizado correctamente!");
       navigate(`/pokemon/${id}`);
     } catch (error) {
       console.error("Error en PUT:", error.response?.data || error);
-      alert("Error al actualizar ❌");
+      alert("Error al actualizar");
     }
   };
 

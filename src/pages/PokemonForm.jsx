@@ -10,6 +10,7 @@ const POKEMON_TYPES = [
   { value: 'E', label: 'Eléctrico' },
   { value: 'T', label: 'Tierra' },
   { value: 'N', label: 'Normal' },
+  { value: 'PS', label: 'Psíquico' },
 ];
 
 export default function PokemonForm() {
@@ -35,19 +36,18 @@ export default function PokemonForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // ✅ PASO 1: Enviamos el objeto plano. El servicio lo convertirá a FormData.
       await createPokemon(pokemonData); 
 
-      alert("Pokémon creado exitosamente ✅");
+      alert("Pokémon creado exitosamente ");
       navigate('/');
     } catch (error) {
       console.error("Error detallado:", error.response?.data || error.message);
       
-      // ✅ PASO 2: Manejo de error 401 específico
+
       if (error.response?.status === 401) {
         alert("Error 401: No tienes permiso. Asegúrate de estar logueado.");
       } else {
-        alert("Error al crear el Pokémon ❌. Revisa la consola.");
+        alert("Error al crear el Pokémon . Revisa la consola.");
       }
     }
   };

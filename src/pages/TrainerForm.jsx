@@ -1,152 +1,119 @@
-import { Typography, Box, TextField, Button, Container, Paper } from '@mui/material';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { createTrainer } from '../services/trainerService';
+import { Typography, Box, TextField, Button, Paper } from "@mui/material";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { createTrainer } from "../services/trainerService";
 
 export default function TrainerForm() {
 
-    const [trainerData, setTrainerData] = useState({
-        name: '',
-        age: '',
-        level: '',
-        birthday: '',
-        picture: null
-    });
+  const [trainerData, setTrainerData] = useState({
+    name: "",
+    age: "",
+    level: "",
+    birthday: "",
+    picture: null
+  });
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const handleChange = (e) => {
-        const { name, value, files } = e.target;
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
 
-        if (name === "picture") {
-            setTrainerData({
-                ...trainerData,
-                picture: files[0]
-            });
-        } else {
-            setTrainerData({
-                ...trainerData,
-                [name]: value
-            });
-        }
-    };
+    if (name === "picture") {
+      setTrainerData({ ...trainerData, picture: files[0] });
+    } else {
+      setTrainerData({ ...trainerData, [name]: value });
+    }
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-        try {
+    try {
+      await createTrainer(trainerData);
 
-            const formData = new FormData();
+      alert("Entrenador creado exitosamente");
+      navigate("/trainers");
 
-            formData.append("name", trainerData.name);
-            formData.append("age", trainerData.age);
-            formData.append("level", trainerData.level);
-            formData.append("birthday", trainerData.birthday);
-            formData.append("picture", trainerData.picture);
+    } catch (error) {
 
-            await createTrainer(formData);
+      console.error("Error detallado:", error.response?.data || error.message);
 
-            alert("Entrenador creado exitosamente");
-            navigate("/trainers");
+      if (error.response?.status === 401) {
+        alert("Error 401: No tienes permiso. Inicia sesión.");
+      } else {
+        alert("Error al crear el Entrenador. Revisa consola.");
+      }
+    }
+  };
 
-        } catch (error) {
-            console.error("Error:", error);
-            alert("Error al crear el entrenador");
-        }
-    };
+  return (
+    <Paper sx={{ p: 4, maxWidth: 500, mx: "auto", mt: 4 }} elevation={3}>
 
-    return (
-        <Container maxWidth="sm">
+      <Typography variant="h4" gutterBottom fontWeight="bold">
+        Formulario de Entrenador
+      </Typography>
 
-            <Box sx={{ mt: 4, mb: 4 }}>
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+      >
 
-                <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', color: '#1976d2' }}>
-                    Formulario de Entrenador
-                </Typography>
+        <TextField
+          label="Nombre"
+          name="name"
+          value={trainerData.name}
+          onChange={handleChange}
+          required
+          fullWidth
+        />
 
-                <Paper elevation={3} sx={{ p: 4, mt: 2 }}>
+        <TextField
+          label="Edad"
+          type="number"
+          name="age"
+          value={trainerData.age}
+          onChange={handleChange}
+          required
+          fullWidth
+        />
 
-                    <Box
-                        component="form"
-                        onSubmit={handleSubmit}
-                        sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}
-                    >
+        <TextField
+          label="Nivel"
+          type="number"
+          name="level"
+          value={trainerData.level}
+          onChange={handleChange}
+          required
+          fullWidth
+        />
 
-                        <TextField
-                            label="Nombre Completo"
-                            name="name"
-                            value={trainerData.name}
-                            onChange={handleChange}
-                            required
-                            fullWidth
-                        />
+        <TextField
+          label="Fecha de nacimiento"
+          type="date"
+          name="birthday"
+          value={trainerData.birthday}
+          onChange={handleChange}
+          InputLabelProps={{ shrink: true }}
+          fullWidth
+        />
 
-                        <TextField
-                            label="Edad"
-                            type="number"
-                            name="age"
-                            value={trainerData.age}
-                            onChange={handleChange}
-                            required
-                            fullWidth
-                        />
+        <Button variant="outlined" component="label">
+          {trainerData.picture ? trainerData.picture.name : "Subir imagen"}
+          <input
+            hidden
+            type="file"
+            name="picture"
+            accept="image/*"
+            onChange={handleChange}
+          />
+        </Button>
 
-                        <TextField
-                            label="Nivel"
-                            type="number"
-                            name="level"
-                            value={trainerData.level}
-                            onChange={handleChange}
-                            required
-                            fullWidth
-                        />
+        <Button type="submit" variant="contained" size="large">
+          Guardar Entrenador
+        </Button>
 
-                        <TextField
-                            label="Fecha de Nacimiento"
-                            type="date"
-                            name="birthday"
-                            value={trainerData.birthday}
-                            InputLabelProps={{ shrink: true }}
-                            onChange={handleChange}
-                            required
-                            fullWidth
-                        />
-
-                        <Button
-                            variant="outlined"
-                            component="label"
-                            fullWidth
-                        >
-                            {trainerData.picture
-                                ? `Archivo: ${trainerData.picture.name}`
-                                : "Subir Foto del Entrenador"
-                            }
-
-                            <input
-                                type="file"
-                                name="picture"
-                                hidden
-                                accept="image/*"
-                                required
-                                onChange={handleChange}
-                            />
-                        </Button>
-
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            color="primary"
-                            size="large"
-                        >
-                            Guardar Entrenador
-                        </Button>
-
-                    </Box>
-
-                </Paper>
-
-            </Box>
-
-        </Container>
-    );
+      </Box>
+    </Paper>
+  );
 }

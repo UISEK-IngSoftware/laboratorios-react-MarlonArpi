@@ -3,7 +3,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import { fetchPokemonById } from "../services/pokemonService";
 import { Card, CardContent, CardMedia, Typography, Button, Box } from "@mui/material";
 
-// URL base de tu backend (ej. http://localhost:8000)
 const API_MEDIA_URL = import.meta.env.VITE_API_MEDIA_URL || "http://localhost:8000";
 
 export default function PokemonDetails() {
@@ -19,7 +18,7 @@ export default function PokemonDetails() {
 
     if (!pokemon) return <Typography sx={{ textAlign: 'center', mt: 4 }}>Cargando...</Typography>;
 
-    // Lógica de URL consistente con PokemonCard
+
     const imageUrl = pokemon.picture
         ? (pokemon.picture.startsWith('http') 
             ? pokemon.picture 

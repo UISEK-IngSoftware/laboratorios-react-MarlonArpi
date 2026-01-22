@@ -1,31 +1,57 @@
-import { Grid, Container, Typography, Box } from "@mui/material";
+import { Typography, Box, Grid } from "@mui/material"; 
 import { useEffect, useState } from "react";
-import { fetchTrainers } from "../services/trainerService";
 import TrainerCard from "../components/TrainerCard";
+import { getTrainers } from "../services/trainerService";
 
 export default function TrainerList() {
-    const [trainers, setTrainers] = useState([]);
+  const [trainers, setTrainers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        fetchTrainers()
-            .then((data) => setTrainers(data))
-            .catch((error) => console.error("Error:", error));
-    }, []);
+  const fetchTrainers = async () => {
+    try {
+      const data = await getTrainers();
+      console.log("TRAINERS RECIBIDOS", data);  
+      setTrainers(data);
+    } catch (error) {
+      console.error("Error al cargar entrenadores:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
+    fetchTrainers();
+  }, []);
+
+  const handleDeleteSuccess = (id) => {
+    setTrainers(trainers.filter((t) => t.id !== id));
+  };
+
+  if (loading) {
     return (
-        <Container>
-            <Box sx={{ mt: 4, mb: 4 }}>
-                <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', color: '#1976d2' }}>
-                    Mis Entrenadores
-                </Typography>
-                <Grid container spacing={3}>
-                    {trainers.map((trainer) => (
-                        <Grid item key={trainer.id} xs={12} sm={6} lg={4}>
-                            <TrainerCard trainer={trainer} />
-                        </Grid>
-                    ))}
-                </Grid>
-            </Box>
-        </Container>
+      <Box sx={{ p: 3 }}>
+        <Typography variant="h5">Cargando entrenadores...</Typography>
+      </Box>
     );
+  }
+
+  return (
+    <Box sx={{ p: 3 }}>
+      <Typography variant="h4" fontWeight="bold" mb={3}>
+        Mis Entrenadores
+      </Typography>
+
+      <Grid container spacing={3}>
+        {trainers.map((trainer) => (
+
+          <Grid item xs={12} sm={6} md={4} key={trainer.id}>
+            <TrainerCard
+              trainer={trainer}
+              onDeleteSuccess={handleDeleteSuccess}
+            />
+          </Grid>
+        ))}
+      </Grid>
+    </Box>
+  );
 }
