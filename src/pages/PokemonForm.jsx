@@ -2,6 +2,7 @@ import { Typography, Box, TextField, Button, MenuItem, Paper } from '@mui/materi
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPokemon } from '../services/pokemonService';
+import Spinner from '../components/Spinner'; 
 
 const POKEMON_TYPES = [
   { value: 'A', label: 'Agua' },
@@ -14,6 +15,7 @@ const POKEMON_TYPES = [
 ];
 
 export default function PokemonForm() {
+  const [loading, setLoading] = useState(false);
   const [pokemonData, setPokemonData] = useState({
     name: '',
     type: '',
@@ -35,6 +37,7 @@ export default function PokemonForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       await createPokemon(pokemonData); 
 
@@ -49,8 +52,15 @@ export default function PokemonForm() {
       } else {
         alert("Error al crear el Pokémon . Revisa la consola.");
       }
+      return;
+    } finally {
+      setLoading(false);
     }
   };
+  
+  if (loading) {
+    return <Spinner />;
+  }
 
   return (
     <Paper sx={{ p: 4, maxWidth: 500, mx: "auto", mt: 4 }} elevation={3}>
